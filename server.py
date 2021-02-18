@@ -14,7 +14,7 @@ class ClientServerProtocol(asyncio.Protocol):
 
         command_name, payload = self.method_parser(data.decode())
         if not command_name:
-            resp = "error\n\n"
+                resp = "error\nwrong command\n\n"
         else:
             if command_name == 'get':
                 resp = self.get_parser(payload)
@@ -31,7 +31,7 @@ class ClientServerProtocol(asyncio.Protocol):
         Method will parse put request and store data to global dict to recieve then
         """
         print('payload: ', payload)
-        error_message = "error\n\n"
+        error_message = "error\nwrong command\n\n"
         ok_message = 'ok\n\n'
         try:
             key, value, timestamp = payload.split(' ')
@@ -56,7 +56,7 @@ class ClientServerProtocol(asyncio.Protocol):
         Response example 'ok\npalm.cpu 10.5 1501864247\neardrum.cpu 15.3 1501864259\n\n'
         """
         print('payload: ', payload)
-        error_message = 'error\n\n'
+        error_message = 'error\nwrong command\n\n'
         ok_message = 'ok\n'
         string_response = ''
         response_to_return = ''
@@ -75,6 +75,8 @@ class ClientServerProtocol(asyncio.Protocol):
                 return response_to_return
             elif ' ' in key:
                 return error_message
+            elif not key:
+                return error_message
             else:
                 return ok_message + '\n'
         except Exception as err:
@@ -86,9 +88,12 @@ class ClientServerProtocol(asyncio.Protocol):
         """
         Method will parse recieved message and return command_name and stripped payload
         """
-        #error_message = 'error\n\n'
-        command_name, payload = data.split(" ", 1)
-        payload = payload.strip()
+        #error_message = 'error\nwrong command\n\n'
+        try:
+            command_name, payload = data.split(" ", 1)
+            payload = payload.strip()
+        except Exception:
+            return None, None
 
         if command_name == 'get':
             return command_name, payload
