@@ -39,6 +39,3 @@ Utilize the `Client` class in `client.py` to interact with the server.
 1. Start the server by running `server.py`.
 2. Use the client in `client.py` to interact with the server.
 
-## Contact
-For inquiries or support, please contact [Your Name] at [Your Contact Information].
-
